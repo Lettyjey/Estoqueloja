@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gerenciamento de Estoque - Tela Principal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-image: url('image/telaprincipal.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .button-group button {
+            padding: 12px;
+            background-color: #3b0b65; /* Cor roxa */
+            color: #fff;
+            border: none;
+            border-radius: 10px; /* Arredondado */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+
+        .button-group button:hover {
+            background-color: #4c1d92; /* Tom de roxo mais claro ao passar o mouse */
+        }
+
+        .button-group button::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%; /* Posição acima do botão */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+            font-size: 14px;
+        }
+
+        .button-group button:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .right-panel {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .right-panel h3 {
+            margin-bottom: 10px;
+        }
+
+        .functionality-box {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap; /* Permitir quebra de linha para os quadrados */
+        }
+
+        .functionality {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centraliza ícone e texto */
+        }
+
+        .functionality button {
+            background-color: #3b0b65; /* Cor roxa */
+            border: none;
+            border-radius: 10px; /* Arredondado */
+            padding: 15px; /* Tamanho do botão */
+            cursor: pointer;
+            position: relative;
+        }
+
+        .functionality button:hover {
+            background-color: #4c1d92; /* Tom de roxo mais claro ao passar o mouse */
+        }
+
+        .functionality button::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%; /* Posição acima do botão */
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+            font-size: 14px;
+        }
+
+        .functionality button:hover::after {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .functionality i {
+            font-size: 24px; /* Tamanho do ícone */
+            color: #fff; /* Cor do ícone */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <div class="button-group">
+            <button data-tooltip="Gerenciamento de Estoque" onclick="window.location.href='manageStock.html'"><i class="fas fa-box"></i></button>
+            <button data-tooltip="Vendas" onclick="window.location.href='sales.html'"><i class="fas fa-shopping-cart"></i></button>
+            <button data-tooltip="Cadastrar Produtos" onclick="window.location.href='product.html'"><i class="fas fa-plus"></i></button>
+            <button data-tooltip="Relatórios" onclick="window.location.href='reports.html'"><i class="fas fa-chart-line"></i></button>
+            <button data-tooltip="Clientes" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i></button>
+            <button data-tooltip="Configurações" onclick="window.location.href='settings.html'"><i class="fas fa-cog"></i></button>
+            <button data-tooltip="Sair" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h2>Tela Principal</h2>
+        <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <h3>Últimas Vendas</h3>
+        <div class="box">Venda 1: R$ 100,00</div>
+        <div class="box">Venda 2: R$ 200,00</div>
+        <div class="box">Venda 3: R$ 300,00</div>
+        
+        <h3>Estoque de Produtos</h3>
+        <div class="box">Produto A: 50 unidades</div>
+        <div class="box">Produto B: 30 unidades</div>
+        <div class="box">Produto C: 20 unidades</div>
+
+        <h3>Outras Funcionalidades</h3>
+        <div class="functionality-box">
+            <div class="functionality">
+                <button data-tooltip="Adicionar Novos Produtos" onclick="addProduct()"><i class="fas fa-plus"></i></button>
+            </div>
+            <div class="functionality">
+                <button data-tooltip="Editar Produtos" onclick="editProduct()"><i class="fas fa-edit"></i></button>
+            </div>
+            <div class="functionality">
+                <button data-tooltip="Promoções" onclick="promotions()"><i class="fas fa-tag"></i></button>
+            </div>
+            <div class="functionality">
+                <button data-tooltip="Calendário" onclick="calendar()"><i class="fas fa-calendar-alt"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.onload = loadSalesChart;
+
+        function loadSalesChart() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Vendas',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function logout() {
+            console.log('Você saiu do sistema.');
+            // Adicione a lógica para fazer logout aqui.
+        }
+
+        function addProduct() {
+            console.log('Adicionar Novos Produtos: Aqui você pode adicionar novos produtos.');
+        }
+
+        function editProduct() {
+            console.log('Editar Produtos: Aqui você pode editar produtos existentes.');
+        }
+
+        function promotions() {
+            console.log('Promoções: Aqui você pode gerenciar promoções.');
+        }
+
+        function calendar() {
+            console.log('Calendário: Aqui você pode gerenciar atividades e datas importantes.');
+        }
+    </script>
+</body>
+</html>

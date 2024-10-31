@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Stock Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('image/fundotela.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        .login-page {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .login-container, .register-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.85);
+            border-radius: 8px;
+            box-shadow: 0 8px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-container h2, .register-container h2 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        form input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        form button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3b82f6;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #2563eb;
+        }
+
+        .register-container {
+            display: none;
+        }
+
+        .register-store-button {
+            margin-top: 20px;
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .register-store-button:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-page">
+            <div class="login-container" id="loginContainer">
+                <h2>User Login</h2>
+                <form id="userLoginForm" onsubmit="loginUser(event)">
+                    <input type="text" placeholder="Username" required>
+                    <input type="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                </form>
+                <button class="register-store-button" onclick="toggleRegister()">Registrar Loja</button>
+            </div>
+
+            <div class="register-container" id="registerContainer">
+                <h2>Registrar Loja</h2>
+                <form id="storeRegisterForm" onsubmit="registerStore(event)">
+                    <input type="text" placeholder="Nome da Loja" required>
+                    <input type="text" placeholder="CPF/CNPJ" required>
+                    <input type="text" placeholder="Telefone/Email Profissional" required>
+                    <input type="text" placeholder="País" required>
+                    <input type="email" placeholder="Email" required>
+                    <input type="password" placeholder="Senha" required>
+                    <button type="submit">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleRegister() {
+            const loginContainer = document.getElementById('loginContainer');
+            const registerContainer = document.getElementById('registerContainer');
+            loginContainer.style.display = 'none';
+            registerContainer.style.display = 'block';
+        }
+
+        function registerStore(event) {
+            event.preventDefault();
+            alert('Loja registrada com sucesso!');
+            toggleBackToLogin();
+        }
+
+        function toggleBackToLogin() {
+            const loginContainer = document.getElementById('loginContainer');
+            const registerContainer = document.getElementById('registerContainer');
+            registerContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+        }
+
+        function loginUser(event) {
+            event.preventDefault();
+            // Aqui você pode adicionar a lógica de autenticação
+            window.location.href = 'telaprincipal.html'; // Redireciona para a tela principal
+        }
+    </script>
+</body>
+</html>
