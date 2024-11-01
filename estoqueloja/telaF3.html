@@ -1,0 +1,47 @@
+<!-- Parte dos Gráficos -->
+<div class="main-content">
+    <h2>Tela Principal</h2>
+    <div class="chart-container">
+        <canvas id="salesChart"></canvas>
+    </div>
+    <div class="chart-container">
+        <canvas id="stockChart"></canvas>
+    </div>
+
+    <!-- Menu e Funcionalidades -->
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <div class="button-group">
+            <button onclick="window.location.href='manageStock.html'"><i class="fas fa-box"></i> Estoque</button>
+            <button onclick="window.location.href='sales.html'"><i class="fas fa-shopping-cart"></i> Vendas</button>
+            <button onclick="window.location.href='product.html'"><i class="fas fa-plus"></i> Produtos</button>
+            <button onclick="window.location.href='clients.html'"><i class="fas fa-user"></i> Clientes</button>
+            <button onclick="window.location.href='reports.html'"><i class="fas fa-chart-line"></i> Relatórios</button>
+            <button onclick="window.location.href='settings.html'"><i class="fas fa-cog"></i> Configurações</button>
+            <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+        </div>
+    </div>
+
+    <h3>Últimas Vendas</h3>
+    <div class="box">Venda 1: R$ 100,00</div>
+    <div class="box">Venda 2: R$ 200,00</div>
+    <div class="box">Venda 3: R$ 300,00</div>
+    
+    <h3>Estoque de Produtos</h3>
+    <div class="box">Produto A: 50 unidades</div>
+    <div class="box">Produto B: 30 unidades</div>
+    <div class="box">Produto C: 20 unidades</div>
+
+    <h3>Outras Funcionalidades</h3>
+    <div class="functionality-box">
+        <div class="functionality">
+            <button onclick="editProduct()" data-tooltip="Editar Produtos"><i class="fas fa-edit"></i></button>
+        </div>
+        <div class="functionality">
+            <button onclick="promotions()" data-tooltip="Promoções"><i class="fas fa-tag"></i></button>
+        </div>
+        <div class="functionality">
+            <button onclick="calendar()" data-tooltip="Calendário"><i class="fas fa-calendar-alt"></i></button>
+        </div>
+    </div>
+</div>
