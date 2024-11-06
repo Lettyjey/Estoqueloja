@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .top-bar {
+            width: 100%;
+            background-color: #3b0b65;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 70px 20px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .button-group, .functionality-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .button-group button, .functionality-box button {
+            padding: 12px;
+            background-color: #3b0b65;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button-group button:hover, .functionality-box button:hover {
+            background-color: #4c1d92;
+        }
+
+        /* Tooltip */
+        .functionality-box button:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #000;
+            color: #fff;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+            font-size: 12px;
+            opacity: 0.8;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 90px 20px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+
+        .right-panel {
+            flex: 1;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            margin-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .details-panel {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background-color: white;
+            box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 2;
+        }
+
+        .details-panel.active {
+            display: block;
+        }
+
+        .box {
+            padding: 10px;
+            font-size: 14px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        /* Estilos para o container de produtos */
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center; /* Centraliza os produtos */
+        }
+
+        .product-box {
+            flex: 1 1 100px; /* Flexível, com largura mínima de 100px */
+            max-width: 150px; /* Largura máxima para os produtos */
+            padding: 10px;
+            background-color: rgba(0, 0,  0, 0.05);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 5px;
+        }
+
+        .product-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        /* Estilo para o formulário de adicionar produto */
+        .add-product-form input, .add-product-form button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .add-product-form button {
+            background-color: #3b0b65;
+            color: white;
+            cursor: pointer;
+        }
+
+        .add-product-form button:hover {
+            background-color: #4c1d92;
+        }
+
+        .functionality-box {
+            display: flex;
+            gap: 10px; /* Espaço entre os botões */
+            justify-content: center; /* Centraliza os botões */
+        }
+
+        .functionality-button {
+            flex: 1; /* Faz com que os botões ocupem o mesmo espaço */
+            max-width: 50px; /* Limita a largura do botão */
+        }
+
+        /* Estilo para a tabela de produtos */
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .product-table th, .product-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .product-table th {
+            background-color: #3b0b65;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">Sistema de Gerenciamento de Estoque</div>
+
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <div class="button-group">
+            <button onclick="toggleDetailsPanel('manageStock')"><i class="fas fa-box"></i> Estoque</button>
+            <button onclick="toggleDetailsPanel('sales')"><i class="fas fa-shopping-cart"></i> Vendas</button>
+            <button onclick="toggleDetailsPanel('addProduct')"><i class="fas fa-plus"></i> Adicionar Produtos</button>
+            <button onclick="toggleDetailsPanel('settings')"><i class="fas fa-cog"></i> Configurações</button>
+            <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h2>Tela Principal</h2>
+        <div class="chart-container">
+            <canvas id="salesChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="stockChart"></canvas>
+        </div>
+    </div>
+
+    <div class="right-panel">
+        <h3>Últimas Vendas</h3>
+        <div class="box">Venda 1: R$ 100,00</div>
+        <div class="box">Venda 2: R$ 200,00</div>
+        <div class="box">Venda 3: R$ 300,00</div>
+        
+        <h3>Estoque de Produtos</h3>
+        <div class="box">Produto A: 50 unidades</div>
+        <div class="box">Produto B: 30 unidades</div>
+        <div class="box">Produto C: 20 unidades</div>
+        
+        <h3>Outras Funcionalidades</h3>
+        <div class="functionality-box">
+            <div class="functionality-button">
+                <button onclick="toggleDetailsPanel('promotions')" data-tooltip="Promoções"><i class="fas fa-tag"></i></button>
+            </div>
+            <div class="functionality-button">
+                <button onclick="toggleDetailsPanel('calendar')" data-tooltip="Calendário"><i class="fas fa-calendar-alt"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <div id="detailsPanel" class="details-panel">
+        <h3>Detalhes</h3>
+        <div id="detailsContent">
+            <!-- O conteúdo é atualizado dinamicamente -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.onload = function() {
+            loadSalesChart();
+            loadStockChart();
+        };
+
+        const products = [];
+
+        function loadSalesChart() {
+            const ctx = document.getElementBy ```javascript
+            'salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Vendas',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 2,
+                        fill: false,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function loadStockChart() {
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Produto A', 'Produto B', 'Produto C'],
+                    datasets: [{
+                        label: 'Estoque',
+                        data: [50, 30, 20],
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function toggleDetailsPanel(panelId) {
+            const detailsPanel = document.getElementById('detailsPanel');
+            const detailsContent = document.getElementById('detailsContent');
+
+            if (panelId === 'manageStock') {
+                detailsContent.innerHTML = '<h3>Gerenciamento de Estoque</h3><p>Gerencie o estoque de produtos aqui.</p>';
+            } else if (panelId === 'sales') {
+                detailsContent.innerHTML = '<h3>Vendas</h3><p>Veja suas vendas recentes.</p>';
+            } else if (panelId === 'addProduct') {
+                detailsContent.innerHTML = `
+                    <h3>Adicionar Produtos</h3>
+                    <form class="add-product-form">
+                        <input type="text" id="productName" placeholder="Nome do Produto" required>
+                        <input type="number" id="productPrice" placeholder="Preço" required>
+                        <input type="text" id="productDescription" placeholder="Descrição" required>
+                        <input type="number" id="productQuantity" placeholder="Quantidade" required>
+                        <button type="button" onclick="addProduct()">Adicionar Produto</button>
+                    </form>
+                    <table class="product-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Preço</th>
+                                <th>Descrição</th>
+                                <th>Quantidade</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                            <!-- Produtos adicionados aparecerão aqui -->
+                        </tbody>
+                    </table>
+                `;
+            } else if (panelId === 'settings') {
+                detailsContent.innerHTML = '<h3>Configurações</h3><p>Gerencie as configurações do sistema.</p>';
+            } else if (panelId === 'promotions') {
+                detailsContent.innerHTML = '<h3>Promoções</h3><p>Gerencie promoções e descontos.</p>';
+            } else if (panelId === 'calendar') {
+                detailsContent.innerHTML = '<h3>Calendário</h3><p>Veja e gerencie o calendário de eventos.</p>';
+            }
+
+            detailsPanel.classList.add('active');
+        }
+
+        function addProduct() {
+            const name = document.getElementById('productName').value;
+            const price = document.getElementById('productPrice').value;
+            const description = document.getElementById('productDescription').value;
+            const quantity = document.getElementById('productQuantity').value;
+
+            if (name && price && description && quantity) {
+                products.push({ name, price, description, quantity });
+                updateProductTable();
+                alert(`Produto Adicionado: ${name}, Preço: R$ ${price}, Descrição: ${description}, Quantidade: ${quantity}`);
+                document.getElementById('productName').value = '';
+                document.getElementById('productPrice').value = '';
+                document.getElementById('productDescription').value = '';
+                document.getElementById('productQuantity').value = '';
+            } else {
+                alert('Por favor, preencha todos os campos.');
+            }
+        }
+
+        function updateProductTable() {
+            const tableBody = document.getElementById('product TableBody');
+            tableBody.innerHTML = ''; // Limpa a tabela antes de adicionar novos produtos
+
+            products.forEach(product => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${product.name}</td>
+                    <td>R$ ${product.price}</td>
+                    <td>${product.description}</td>
+                    <td>${product.quantity}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        function logout() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

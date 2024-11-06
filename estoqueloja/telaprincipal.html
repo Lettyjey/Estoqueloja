@@ -16,9 +16,7 @@
             font-family: Arial, sans-serif;
             display: flex;
             height: 100vh;
-            background-image: url('image/telaprincipal.png');
-            background-size: cover;
-            background-position: center;
+            background-color: #f4f4f4;
         }
 
         .sidebar {
@@ -43,40 +41,17 @@
 
         .button-group button {
             padding: 12px;
-            background-color: #3b0b65; /* Cor roxa */
+            background-color: #3b0b65;
             color: #fff;
             border: none;
-            border-radius: 10px; /* Arredondado */
+            border-radius: 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
             position: relative;
         }
 
         .button-group button:hover {
-            background-color: #4c1d92; /* Tom de roxo mais claro ao passar o mouse */
-        }
-
-        .button-group button::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%; /* Posição acima do botão */
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-            font-size: 14px;
-        }
-
-        .button-group button:hover::after {
-            opacity: 1;
-            visibility: visible;
+            background-color: #4c1d92;
         }
 
         .main-content {
@@ -107,35 +82,51 @@
             margin-bottom: 10px;
         }
 
+        .box {
+            padding: 10px;
+            font-size: 14px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
         .functionality-box {
             display: flex;
             gap: 20px;
-            flex-wrap: wrap; /* Permitir quebra de linha para os quadrados */
+            flex-wrap: wrap;
         }
 
         .functionality {
+            position: relative;
             display: flex;
-            flex-direction: column;
-            align-items: center; /* Centraliza ícone e texto */
+            align-items: center;
+            justify-content: center;
         }
 
         .functionality button {
-            background-color: #3b0b65; /* Cor roxa */
+            background-color: #3b0b65;
             border: none;
-            border-radius: 10px; /* Arredondado */
-            padding: 15px; /* Tamanho do botão */
+            border-radius: 10px;
+            padding: 15px;
+            color: #fff;
             cursor: pointer;
             position: relative;
         }
 
         .functionality button:hover {
-            background-color: #4c1d92; /* Tom de roxo mais claro ao passar o mouse */
+            background-color: #4c1d92;
         }
 
-        .functionality button::after {
+        .functionality i {
+            font-size: 24px;
+            color: #fff;
+        }
+
+        /* Tooltip styling */
+        .functionality button:hover::after {
             content: attr(data-tooltip);
             position: absolute;
-            bottom: 100%; /* Posição acima do botão */
+            bottom: -30px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #333;
@@ -143,21 +134,15 @@
             padding: 5px 10px;
             border-radius: 5px;
             white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease;
-            z-index: 10;
-            font-size: 14px;
-        }
-
-        .functionality button:hover::after {
+            font-size: 12px;
             opacity: 1;
             visibility: visible;
+            transition: opacity 0.3s ease;
         }
 
-        .functionality i {
-            font-size: 24px; /* Tamanho do ícone */
-            color: #fff; /* Cor do ícone */
+        .functionality button::after {
+            opacity: 0;
+            visibility: hidden;
         }
     </style>
 </head>
@@ -165,13 +150,11 @@
     <div class="sidebar">
         <h2>Menu</h2>
         <div class="button-group">
-            <button data-tooltip="Gerenciamento de Estoque" onclick="window.location.href='manageStock.html'"><i class="fas fa-box"></i></button>
-            <button data-tooltip="Vendas" onclick="window.location.href='sales.html'"><i class="fas fa-shopping-cart"></i></button>
-            <button data-tooltip="Cadastrar Produtos" onclick="window.location.href='product.html'"><i class="fas fa-plus"></i></button>
-            <button data-tooltip="Relatórios" onclick="window.location.href='reports.html'"><i class="fas fa-chart-line"></i></button>
-            <button data-tooltip="Clientes" onclick="window.location.href='customers.html'"><i class="fas fa-users"></i></button>
-            <button data-tooltip="Configurações" onclick="window.location.href='settings.html'"><i class="fas fa-cog"></i></button>
-            <button data-tooltip="Sair" onclick="logout()"><i class="fas fa-sign-out-alt"></i></button>
+            <button onclick="window.location.href='manageStock.html'"><i class="fas fa-box"></i> Estoque</button>
+            <button onclick="window.location.href='sales.html'"><i class="fas fa-shopping-cart"></i> Vendas</button>
+            <button onclick="window.location.href='product.html'"><i class="fas fa-plus"></i> Produtos</button>
+            <button onclick="window.location.href='settings.html'"><i class="fas fa-cog"></i> Configurações</button>
+            <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Sair</button>
         </div>
     </div>
 
@@ -179,6 +162,9 @@
         <h2>Tela Principal</h2>
         <div class="chart-container">
             <canvas id="salesChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="stockChart"></canvas>
         </div>
     </div>
 
@@ -196,23 +182,23 @@
         <h3>Outras Funcionalidades</h3>
         <div class="functionality-box">
             <div class="functionality">
-                <button data-tooltip="Adicionar Novos Produtos" onclick="addProduct()"><i class="fas fa-plus"></i></button>
+                <button onclick="editProduct()" data-tooltip="Adicionar Produtos"><i class="fas fa-edit"></i></button>
             </div>
             <div class="functionality">
-                <button data-tooltip="Editar Produtos" onclick="editProduct()"><i class="fas fa-edit"></i></button>
+                <button onclick="promotions()" data-tooltip="Promoções"><i class="fas fa-tag"></i></button>
             </div>
             <div class="functionality">
-                <button data-tooltip="Promoções" onclick="promotions()"><i class="fas fa-tag"></i></button>
-            </div>
-            <div class="functionality">
-                <button data-tooltip="Calendário" onclick="calendar()"><i class="fas fa-calendar-alt"></i></button>
+                <button onclick="calendar()" data-tooltip="Calendário"><i class="fas fa-calendar-alt"></i></button>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        window.onload = loadSalesChart;
+        window.onload = function() {
+            loadSalesChart();
+            loadStockChart();
+        };
 
         function loadSalesChart() {
             const ctx = document.getElementById('salesChart').getContext('2d');
@@ -239,13 +225,33 @@
             });
         }
 
-        function logout() {
-            console.log('Você saiu do sistema.');
-            // Adicione a lógica para fazer logout aqui.
+        function loadStockChart() {
+            const ctx = document.getElementById('stockChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Produto A', 'Produto B', 'Produto C'],
+                    datasets: [{
+                        label: 'Estoque',
+                        data: [50, 30, 20],
+                        backgroundColor: 'rgba(153, 102, 255, 0.6)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
         }
 
-        function addProduct() {
-            console.log('Adicionar Novos Produtos: Aqui você pode adicionar novos produtos.');
+        function logout() {
+            console.log('Você saiu do sistema.');
         }
 
         function editProduct() {
